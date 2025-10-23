@@ -1,8 +1,10 @@
 # MLOps Project: Abalone Age Prediction
 
+[![CI](https://github.com/louis-leibo/xhec-mlops-2025-project/actions/workflows/ci.yaml/badge.svg)](https://github.com/louis-leibo/xhec-mlops-2025-project/actions/workflows/ci.yaml)
 [![Python Version](https://img.shields.io/badge/python-3.10%20or%203.11-blue.svg)]()
 [![Linting: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-informational?logo=pre-commit&logoColor=white)](https://github.com/artefactory/xhec-mlops-project-student/blob/main/.pre-commit-config.yaml)
+![Docker](https://img.shields.io/badge/docker-ready-blue)
 
 ## 📋 Overview
 
@@ -158,17 +160,59 @@ deployment = training_pipeline.to_deployment(
 
 ---
 
+## � Model Tracking with MLflow
+
+This project uses MLflow to track experiments, log metrics, and version models.
+
+### View MLflow UI
+
+After running a training pipeline, view the MLflow tracking UI:
+
+```bash
+uv run mlflow ui
+```
+
+Then open your browser to: **http://127.0.0.1:5000**
+
+### What Gets Tracked
+
+MLflow automatically logs:
+- **Parameters**: Dataset path, test size, random state, model type
+- **Metrics**: MAE, RMSE, R² score
+- **Model**: Versioned model artifacts with signature
+- **Artifacts**: Model pickle file
+
+### MLflow Features
+
+- 📈 **Experiment Tracking**: Compare different model runs
+- 🏷️ **Model Registry**: Version control for trained models
+- 📝 **Run Metadata**: Complete reproducibility information
+- 🔍 **Model Comparison**: Side-by-side metric comparisons
+
+### Access Models Programmatically
+
+```python
+import mlflow
+
+# Load the latest model version
+model = mlflow.sklearn.load_model("models:/abalone-age-predictor/latest")
+
+# Or load a specific run
+model = mlflow.sklearn.load_model("runs:/<run_id>/model")
+```
+
+### MLflow Data Location
+
+- **Tracking Data**: Stored in `./mlruns` directory
+- **Registered Models**: Managed by MLflow Model Registry
+- **Note**: The `mlruns` directory is gitignored to avoid tracking large binary files
+
+---
+
 ## �📚 Project Structure
 
 This project follows a branch-based workflow. Each numbered branch (`0/environment_setup`, `1/eda_and_modelling_notebooks`, etc.) represents a development milestone.
 
----
-
-## 👥 Contributors
-
-- **Thibaud**
-
----
 
 ## 🐳 Docker API Deployment (Step 4)
 
