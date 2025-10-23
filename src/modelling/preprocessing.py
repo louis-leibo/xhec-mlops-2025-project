@@ -1,11 +1,13 @@
 """Module for data preprocessing."""
 
 import pandas as pd
+from prefect import task
 from sklearn.compose import ColumnTransformer
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
+@task
 def load_data(filepath):
     """
     Load the abalone dataset from a CSV file.
@@ -20,6 +22,7 @@ def load_data(filepath):
     return df
 
 
+@task
 def prepare_features(df):
     """
     Prepare features and target from the dataframe.
@@ -41,6 +44,7 @@ def prepare_features(df):
     return X, y
 
 
+@task
 def split_data(X, y, test_size=0.2, random_state=42):
     """
     Split data into train and test sets.
@@ -60,6 +64,7 @@ def split_data(X, y, test_size=0.2, random_state=42):
     return X_train, X_test, y_train, y_test
 
 
+@task
 def create_preprocessor():
     """
     Create a preprocessing pipeline for the abalone dataset.

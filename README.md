@@ -78,7 +78,87 @@ uv run pytest
 
 ---
 
-## 📚 Project Structure
+## � Model Training with Prefect
+
+This project uses Prefect for orchestrating the model training pipeline with scheduling and monitoring capabilities.
+
+### Quick Start - Automated Setup
+
+The easiest way to start the Prefect server and deployment:
+
+**Windows (PowerShell):**
+```powershell
+.\start_training.ps1
+```
+
+**Linux/Mac:**
+```bash
+chmod +x start_training.sh
+./start_training.sh
+```
+
+This script will:
+- ✅ Check all dependencies (Prefect, SQLite, etc.)
+- ✅ Start the Prefect server in a separate window
+- ✅ Run the training pipeline immediately
+- ✅ Set up automatic retraining on a schedule
+
+### Manual Setup
+
+If you prefer to run components separately:
+
+#### 1. Start Prefect Server
+
+```bash
+# Start the Prefect server (keep this terminal open)
+uv run prefect server start --host localhost
+```
+
+The Prefect UI will be available at: **http://127.0.0.1:4200**
+
+#### 2. Run Training Pipeline
+
+In a new terminal:
+
+```bash
+# Activate virtual environment
+# Windows:
+.\.venv\Scripts\Activate.ps1
+# Linux/Mac:
+source .venv/bin/activate
+
+# Run the deployment with scheduled retraining
+uv run python src/deployment.py
+```
+
+### View Flow Runs
+
+Open your browser and navigate to the Prefect UI:
+- **URL**: http://127.0.0.1:4200
+- View flow runs, logs, and execution history
+- Monitor scheduled deployments
+- Track model training metrics
+
+### Deployment Configuration
+
+The deployment is configured in `src/deployment.py`:
+- **Schedule**: Daily retraining (configurable)
+- **Dataset**: `data/abalone_trainset.csv`
+- **Flow**: Defined in `src/modelling/main.py`
+
+To modify the schedule, edit `src/deployment.py`:
+```python
+deployment = training_pipeline.to_deployment(
+    name="abalone-model-retraining",
+    interval=86400,  # Daily (in seconds)
+    # Or use cron:
+    # cron="0 2 * * *",  # Daily at 2 AM
+)
+```
+
+---
+
+## �📚 Project Structure
 
 This project follows a branch-based workflow. Each numbered branch (`0/environment_setup`, `1/eda_and_modelling_notebooks`, etc.) represents a development milestone.
 
