@@ -213,8 +213,3 @@ model = mlflow.sklearn.load_model("runs:/<run_id>/model")
 
 This project follows a branch-based workflow. Each numbered branch (`0/environment_setup`, `1/eda_and_modelling_notebooks`, etc.) represents a development milestone.
 
----
-
-## 👥 Contributors
-
-- **Thibaud**
