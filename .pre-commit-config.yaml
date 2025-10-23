@@ -8,7 +8,29 @@ repos:
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files
-    # TODO - add ruff pre-commit hooks
+  - repo: local
+    hooks:
+      - id: ruff-format
+        name: Formatting (ruff)
+        entry: uv run ruff format
+        types: [python]
+        language: system
+      - id: ruff-fix
+        name: Linting (ruff)
+        entry: uv run ruff check
+        types: [python]
+        language: system
+      - id: ruff-sort
+        name: Sorting (ruff)
+        entry: uv run ruff check --select I --fix
+        types: [python]
+        language: system
+      - id: nbstripout
+        name: Strip Jupyter notebook output (nbstripout)
+        entry: uv run nbstripout
+        types: [file]
+        files: (.ipynb)$
+        language: system
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.7.17
     hooks:
