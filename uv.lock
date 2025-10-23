@@ -2827,6 +2827,7 @@ dependencies = [
 
 [package.optional-dependencies]
 dev = [
+    { name = "ipykernel" },
     { name = "jupyter" },
     { name = "pre-commit" },
     { name = "pytest" },
@@ -2835,6 +2836,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
+    { name = "ipykernel", marker = "extra == 'dev'", specifier = ">=7.0.1" },
     { name = "jupyter", marker = "extra == 'dev'", specifier = ">=1.0.0" },
     { name = "matplotlib", specifier = ">=3.7.0" },
     { name = "mlflow", specifier = ">=2.8.0" },

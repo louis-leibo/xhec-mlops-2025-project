@@ -29,4 +29,5 @@ dev = [
   "ruff>=0.1.0",
   "pytest>=7.0.0",
   "jupyter>=1.0.0",
+  "ipykernel>=7.0.1",
 ]
