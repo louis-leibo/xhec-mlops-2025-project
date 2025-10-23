@@ -1,6 +1,6 @@
 # MLOps Project: Abalone Age Prediction
 
-![CI/CD Pipeline](https://github.com/louis-leibo/xhec-mlops-2025-project/actions/workflows/ci.yml/badge.svg)
+[![CI](https://github.com/louis-leibo/xhec-mlops-2025-project/actions/workflows/ci.yaml/badge.svg)](https://github.com/louis-leibo/xhec-mlops-2025-project/actions/workflows/ci.yaml)
 [![Python Version](https://img.shields.io/badge/python-3.10%20or%203.11-blue.svg)]()
 [![Linting: ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Pre-commit](https://img.shields.io/badge/pre--commit-enabled-informational?logo=pre-commit&logoColor=white)](https://github.com/artefactory/xhec-mlops-project-student/blob/main/.pre-commit-config.yaml)
