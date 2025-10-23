@@ -3,12 +3,20 @@
 import argparse
 from pathlib import Path
 
-from preprocessing import create_preprocessor, load_data, prepare_features, split_data
-from training import evaluate_model, train_model
-from utils import pickle_object
+from prefect import flow
+
+from modelling.preprocessing import (
+    create_preprocessor,
+    load_data,
+    prepare_features,
+    split_data,
+)
+from modelling.training import evaluate_model, train_model
+from modelling.utils import pickle_object
 
 
-def main(trainset_path: str) -> None:
+@flow(name="model_training_flow", version="1.0")
+def training_pipeline(trainset_path: str) -> None:
     """
     Train a model using the data at the given path and save the model (pickle).
 
@@ -66,4 +74,4 @@ if __name__ == "__main__":
     )
     parser.add_argument("trainset_path", type=str, help="Path to the training set")
     args = parser.parse_args()
-    main(args.trainset_path)
+    training_pipeline(args.trainset_path)

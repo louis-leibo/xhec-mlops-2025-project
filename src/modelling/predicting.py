@@ -3,9 +3,12 @@
 from pathlib import Path
 
 import pandas as pd
-from utils import load_pickle_object
+from prefect import flow, task
+
+from modelling.utils import load_pickle_object
 
 
+@task
 def load_model(model_path=None):
     """
     Load a trained model from pickle file.
@@ -25,6 +28,7 @@ def load_model(model_path=None):
     return model
 
 
+@task
 def predict(model, X):
     """
     Make predictions using the trained model.
@@ -62,6 +66,23 @@ def predict_from_csv(model_path, csv_path):
     df["Predicted_Rings"] = predictions
 
     return df
+
+
+@flow(name="model_prediction_flow", version="1.0")
+def predict_pipeline(X, model_path):
+    """
+    Make predictions on given features using the trained model.
+
+    Args:
+        X: Features to predict on (pandas DataFrame or numpy array)
+        model_path: Path to the pickled model. If None, uses default path.
+
+    Returns:
+        Array of predictions
+    """
+    model = load_model(model_path)
+    predictions = predict(model, X)
+    return predictions
 
 
 if __name__ == "__main__":
