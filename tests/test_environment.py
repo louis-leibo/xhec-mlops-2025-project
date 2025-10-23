@@ -11,9 +11,9 @@ def test_python_version():
 
 def test_imports():
     """Test that required packages can be imported."""
+    import numpy  # noqa: F401
     import pandas  # noqa: F401
     import pydantic  # noqa: F401
     import sklearn  # noqa: F401
-    import numpy  # noqa: F401
 
     assert True, "All required packages imported successfully"
