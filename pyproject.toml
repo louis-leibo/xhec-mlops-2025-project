@@ -22,6 +22,8 @@ dependencies = [
   "matplotlib>=3.7.0",
   "seaborn>=0.12.0",
   "prefect>=3.4.24",
+  "fastapi>=0.104.0", #new
+  "uvicorn[standard]>=0.24.0", #new
 ]
 
 [project.optional-dependencies]

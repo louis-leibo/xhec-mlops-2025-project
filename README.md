@@ -167,3 +167,278 @@ This project follows a branch-based workflow. Each numbered branch (`0/environme
 ## 👥 Contributors
 
 - **Thibaud**
+
+---
+
+## 🐳 Docker API Deployment (Step 4)
+
+This section covers deploying the FastAPI service using Docker for production-ready predictions.
+
+### Prerequisites
+
+- Docker installed and running
+- Model file available at `src/web_service/local_objects/model.pkl`
+
+### Quick Start - Docker API
+
+#### 1. Build and Run the Docker Container
+
+```bash
+# Build the Docker image
+docker build -f Dockerfile.app -t abalone-api:latest .
+
+# Run the container with port mapping
+docker run -d --name abalone-api -p 8000:8001 abalone-api:latest
+```
+
+#### 2. Verify the API is Running
+
+```bash
+# Check container status
+docker ps
+
+# View logs
+docker logs abalone-api
+
+# Test health endpoint
+curl http://localhost:8000/health
+```
+
+#### 3. Access the API
+
+- **API Base URL**: http://localhost:8000
+- **Interactive Docs**: http://localhost:8000/docs
+- **Alternative Docs**: http://localhost:8000/redoc
+- **Health Check**: http://localhost:8000/health
+
+### Complete Docker Workflow
+
+#### Step-by-Step Instructions
+
+1. **Navigate to project directory**:
+   ```bash
+   cd xhec-mlops-2025-project
+   ```
+
+2. **Ensure model file exists**:
+   ```bash
+   ls -la src/web_service/local_objects/model.pkl
+   ```
+
+3. **Build Docker image**:
+   ```bash
+   docker build -f Dockerfile.app -t abalone-api:latest .
+   ```
+
+4. **Stop any existing container**:
+   ```bash
+   docker stop abalone-api 2>/dev/null || true
+   docker rm abalone-api 2>/dev/null || true
+   ```
+
+5. **Run the container**:
+   ```bash
+   docker run -d --name abalone-api -p 8000:8001 abalone-api:latest
+   ```
+
+6. **Test the API**:
+   ```bash
+   # Health check
+   curl http://localhost:8000/health
+   
+   # Make a prediction
+   curl -X POST "http://localhost:8000/predict" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "sex": "M",
+       "length": 0.455,
+       "diameter": 0.365,
+       "height": 0.095,
+       "whole_weight": 0.514,
+       "shucked_weight": 0.2245,
+       "viscera_weight": 0.101,
+       "shell_weight": 0.15
+     }'
+   ```
+
+### Docker Management Commands
+
+```bash
+# View running containers
+docker ps
+
+# View all containers (including stopped)
+docker ps -a
+
+# View container logs
+docker logs abalone-api
+
+# Follow logs in real-time
+docker logs -f abalone-api
+
+# Stop the container
+docker stop abalone-api
+
+# Remove the container
+docker rm abalone-api
+
+# Remove the image
+docker rmi abalone-api:latest
+```
+
+### Troubleshooting
+
+#### Container won't start
+```bash
+# Check logs for errors
+docker logs abalone-api
+
+# Verify model file exists
+docker exec abalone-api ls -la /app/src/web_service/local_objects/
+```
+
+#### Port already in use
+```bash
+# Check what's using port 8000
+lsof -i :8000
+
+# Use a different port
+docker run -d --name abalone-api -p 8001:8001 abalone-api:latest
+```
+
+#### Model file missing
+```bash
+# Ensure model exists before building
+ls -la src/web_service/local_objects/model.pkl
+
+# If missing, train the model first
+uv run python src/modelling/main.py
+```
+
+### API Endpoints
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/` | GET | Health check |
+| `/health` | GET | Alternative health check |
+| `/docs` | GET | Interactive API documentation (Swagger UI) |
+| `/redoc` | GET | Alternative API documentation |
+| `/model/info` | GET | Model information and metadata |
+| `/predict` | POST | Make age predictions |
+
+### Making Predictions
+
+#### Using curl
+
+```bash
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "sex": "M",
+    "length": 0.455,
+    "diameter": 0.365,
+    "height": 0.095,
+    "whole_weight": 0.514,
+    "shucked_weight": 0.2245,
+    "viscera_weight": 0.101,
+    "shell_weight": 0.15
+  }'
+```
+
+#### Response Format
+
+```json
+{
+  "predicted_rings": 9.204333139804156,
+  "predicted_age": 10.704333139804156
+}
+```
+
+#### Input Schema
+
+| Field | Type | Description | Constraints |
+|-------|------|-------------|-------------|
+| `sex` | string | Sex of the abalone | "M", "F", or "I" |
+| `length` | float | Length (mm) | 0.0 ≤ value ≤ 1.0 |
+| `diameter` | float | Diameter (mm) | 0.0 ≤ value ≤ 1.0 |
+| `height` | float | Height (mm) | 0.0 ≤ value ≤ 1.0 |
+| `whole_weight` | float | Whole weight (grams) | ≥ 0.0 |
+| `shucked_weight` | float | Shucked weight (grams) | ≥ 0.0 |
+| `viscera_weight` | float | Viscera weight (grams) | ≥ 0.0 |
+| `shell_weight` | float | Shell weight (grams) | ≥ 0.0 |
+
+### Docker Configuration
+
+The Docker setup uses the following port mapping:
+- **API**: `localhost:8000` → `container:8001`
+- **Prefect UI**: `localhost:4200` → `container:4201`
+
+#### Docker Commands
+
+```bash
+# Build the image
+docker build -f Dockerfile.app -t abalone-api:latest .
+
+# Run the container
+docker run -d --name abalone-api -p 8000:8001 abalone-api:latest
+
+# View logs
+docker logs abalone-api
+
+# Stop the container
+docker stop abalone-api
+
+# Remove the container
+docker rm abalone-api
+```
+
+### API Documentation
+
+Once the API is running, you can access:
+- **Swagger UI**: http://localhost:8000/docs (or 8001 for local)
+- **ReDoc**: http://localhost:8000/redoc (or 8001 for local)
+
+These interfaces allow you to:
+- Test the API endpoints interactively
+- View request/response schemas
+- Download OpenAPI specification
+
+---
+
+## 🚀 Complete Workflow
+
+### 1. Environment Setup
+```bash
+uv sync --all-extras
+source .venv/bin/activate
+```
+
+### 2. Model Training (Prefect)
+```bash
+./start_training.sh
+# Access Prefect UI at http://localhost:4200
+```
+
+### 3. Docker API Deployment (Step 4)
+```bash
+# Build and run Docker container
+docker build -f Dockerfile.app -t abalone-api:latest .
+docker run -d --name abalone-api -p 8000:8001 abalone-api:latest
+
+# Verify API is running
+curl http://localhost:8000/health
+```
+
+### 4. Make Predictions
+```bash
+# Test the API
+curl http://localhost:8000/health
+
+# Make predictions via Docker API
+curl -X POST "http://localhost:8000/predict" \
+  -H "Content-Type: application/json" \
+  -d '{"sex": "M", "length": 0.455, "diameter": 0.365, "height": 0.095, "whole_weight": 0.514, "shucked_weight": 0.2245, "viscera_weight": 0.101, "shell_weight": 0.15}'
+
+# Access interactive documentation
+# Open browser: http://localhost:8000/docs
+```
