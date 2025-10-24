@@ -83,6 +83,20 @@ def predict_endpoint(payload: AbaloneFeatures) -> PredictionResponse:
         features_dict = payload.dict()
         df = pd.DataFrame([features_dict])
 
+        # Transform column names to match what the model expects
+        # The model was trained with capitalized column names and spaces instead of underscores
+        column_mapping = {
+            "sex": "Sex",
+            "length": "Length",
+            "diameter": "Diameter",
+            "height": "Height",
+            "whole_weight": "Whole weight",
+            "shucked_weight": "Shucked weight",
+            "viscera_weight": "Viscera weight",
+            "shell_weight": "Shell weight",
+        }
+        df = df.rename(columns=column_mapping)
+
         # Make prediction
         prediction = make_prediction(model, df)
         predicted_rings = float(prediction[0])
