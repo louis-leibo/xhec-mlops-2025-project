@@ -34,3 +34,10 @@ dev = [
   "jupyter>=1.0.0",
   "ipykernel>=7.0.1",
 ]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+# Ignore import sorting and module-level imports not at top of file
+ignore = ["I", "E402"]

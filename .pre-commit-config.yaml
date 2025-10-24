@@ -16,12 +16,12 @@ repos:
         name: Formatting (black)
         types_or: [python, pyi]
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: Sorting imports (isort)
-        args: ["--profile", "black"]
+  # - repo: https://github.com/pycqa/isort
+  #   rev: 5.13.2
+  #   hooks:
+  #     - id: isort
+  #       name: Sorting imports (isort)
+  #       args: ["--profile", "black", "--skip-gitignore"]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.1.14

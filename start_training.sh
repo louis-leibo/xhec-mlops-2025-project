@@ -74,7 +74,7 @@ echo "Starting model retraining deployment..."
 echo ""
 
 # Run the deployment script
-uv run python src/deployment.py
+uv run python src/web_service/model_training.py
 
 # Clean up: kill Prefect server on exit
 trap "kill $PREFECT_PID 2>/dev/null" EXIT

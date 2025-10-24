@@ -1,0 +1,97 @@
+version: '3.8'
+
+services:
+  # FastAPI Service
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    container_name: abalone-api
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./mlruns:/app/mlruns
+    environment:
+      - PYTHONPATH=/app
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PREFECT_API_URL=http://prefect:4200/api
+    depends_on:
+      - mlflow
+      - prefect
+    networks:
+      - abalone-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # MLflow Service
+  mlflow:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    container_name: abalone-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/app/mlruns
+      - ./data:/app/data
+    environment:
+      - PYTHONPATH=/app
+    networks:
+      - abalone-network
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri file:///app/mlruns
+
+  # Prefect Service
+  prefect:
+    build:
+      context: .
+      dockerfile: Dockerfile.prefect
+    container_name: abalone-prefect
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./mlruns:/app/mlruns
+      - prefect-data:/root/.prefect
+    environment:
+      - PYTHONPATH=/app
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PREFECT_API_URL=http://0.0.0.0:4200/api
+    depends_on:
+      - mlflow
+    networks:
+      - abalone-network
+    command: prefect server start --host 0.0.0.0
+
+  # Training Service (runs deployment)
+  training:
+    build:
+      context: .
+      dockerfile: Dockerfile.training
+    container_name: abalone-training
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./mlruns:/app/mlruns
+    environment:
+      - PYTHONPATH=/app
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - PREFECT_API_URL=http://prefect:4200/api
+    depends_on:
+      - mlflow
+      - prefect
+    networks:
+      - abalone-network
+    restart: unless-stopped
+
+networks:
+  abalone-network:
+    driver: bridge
+
+volumes:
+  prefect-data:
