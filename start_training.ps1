@@ -73,4 +73,4 @@ Write-Host "Starting model retraining deployment..." -ForegroundColor Green
 Write-Host ""
 
 # Run the deployment script
-uv run python src/deployment.py
+uv run python src/web_service/model_training.py

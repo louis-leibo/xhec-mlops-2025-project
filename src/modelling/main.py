@@ -1,8 +1,14 @@
 """Main training flow for the abalone age prediction model."""
 
-import argparse
+# isort: off
 import sys
 from pathlib import Path
+
+# Add src directory to Python path BEFORE other imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+# isort: on
+
+import argparse
 
 import mlflow
 import mlflow.sklearn
@@ -16,9 +22,6 @@ from modelling.preprocessing import (
 )
 from modelling.training import evaluate_model, train_model
 from modelling.utils import pickle_object
-
-# Add src directory to Python paths
-sys.path.insert(0, str(Path(__file__).parent.parent))
 
 
 @flow(name="model_training_flow", version="1.0")
